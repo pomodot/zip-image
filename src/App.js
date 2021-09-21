@@ -5,6 +5,12 @@ import { Button } from "semantic-ui-react";
 import "./App.css";
 
 function App() {
+    const zipTypes = [
+        "application/zip",
+        "application/octet-stream",
+        "application/x-zip-compressed",
+        "multipart/x-zip",
+    ];
     const images = useRef();
     const selectButton = useRef();
     const fileInput = useRef();
@@ -25,6 +31,10 @@ function App() {
         setLogs([].concat(logs));
     };
 
+    const checkZipType = (type) => {
+        return zipTypes.indexOf(type) === -1;
+    };
+
     const handleFile = async (e) => {
         const selectedFile = e.target.files[0];
         if (!selectedFile) {
@@ -32,10 +42,14 @@ function App() {
             return;
         }
         clog("File selected!");
-        if (selectedFile.type !== "application/x-zip-compressed") {
-            clog("Selected file is not a zip file! type: " + selectedFile.type);
+
+        if (checkZipType(selectedFile.type)) {
+            clog("Selected file is not a zip file!");
+            clog(" type: " + selectedFile.type);
             return;
         }
+        clog("File is a zip archive!");
+
         images.current.innerHTML = "";
         clog("Images empting...");
 
