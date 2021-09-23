@@ -25,3 +25,34 @@
 .Logs {
     color: aquamarine;
 }
+
+.ImagePopup {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0px;
+    left: 0px;
+    background-color: black;
+}
+
+.ImagePopup > img {
+    /* max-width: 100%; */
+    /* max-height: 100%; */
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ImagePopupClose {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    padding: 0px !important;
+    margin: 0px;
+    top: 5px;
+    right: 5px;
+}

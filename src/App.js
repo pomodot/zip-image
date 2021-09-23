@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import JSZip from "jszip";
 import { Button } from "semantic-ui-react";
 
@@ -12,8 +12,19 @@ function App() {
         "multipart/x-zip",
     ];
     const images = useRef();
+    const popup = useRef();
     const selectButton = useRef();
     const fileInput = useRef();
+    const [loc, setLoc] = useState(window.location.href);
+
+    useEffect(() => {
+        if (loc.includes("#")) {
+            window.location.href = window.location.href.split("#")[0];
+            setLoc(window.location.href);
+        }
+    }, [loc]);
+
+    const [showPopup, togglePopup] = useState(false);
 
     const [logs, setLogs] = useState([]);
     const [showLogs, toggleLogs] = useState(false);
@@ -59,7 +70,19 @@ function App() {
             if (Object.hasOwnProperty.call(zip.files, name)) {
                 const blob = await zip.file(name).async("blob");
                 const image = new Image();
+                image.setAttribute("key", name);
                 image.src = URL.createObjectURL(blob);
+
+                image.onclick = (e) => {
+                    togglePopup(!showPopup);
+
+                    const popupImage = new Image();
+                    popupImage.src = URL.createObjectURL(blob);
+                    popup.current.innerHTML = "";
+                    popup.current.appendChild(popupImage);
+
+                    window.location.href = loc + "#" + name;
+                };
                 images.current.appendChild(image);
             }
         }
@@ -77,9 +100,29 @@ function App() {
             />
             <Button onClick={handleLogsButton} primary content="Logs" />
             <div className="Logs">
-                {showLogs && logs.map((log) => <div>{log}</div>)}
+                {showLogs &&
+                    logs.map((log, i) => <div key={"log-" + i}>{log}</div>)}
             </div>
             <div className="ImageViewer" ref={images}></div>
+            {showPopup && (
+                <div
+                    className="ImagePopup"
+                    ref={popup}
+                    onClick={() => {
+                        togglePopup(!showPopup);
+                    }}
+                ></div>
+            )}
+            {showPopup && (
+                <Button
+                    className="ImagePopupClose"
+                    content="X"
+                    negative
+                    onClick={() => {
+                        togglePopup(!showPopup);
+                    }}
+                />
+            )}
         </div>
     );
 }
