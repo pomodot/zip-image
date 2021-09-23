@@ -16,15 +16,19 @@ function App() {
     const selectButton = useRef();
     const fileInput = useRef();
     const [loc, setLoc] = useState(window.location.href);
+    const [showPopup, togglePopup] = useState(false);
 
     useEffect(() => {
-        if (loc.includes("#")) {
+        if (loc.includes("##")) {
             window.location.href = window.location.href.split("#")[0];
-            setLoc(window.location.href);
+        } else if (loc.includes("#")) {
+            if (window.location.href.split("#")[1]) {
+                setLoc(window.location.href.split("#")[0]);
+            }
+        } else if (loc.includes("-close")) {
+            setLoc(window.location.href.split("#")[0] + "#");
         }
     }, [loc]);
-
-    const [showPopup, togglePopup] = useState(false);
 
     const [timer, setTimer] = useState(Date.now());
     const [toggleTimer, setToggleTimer] = useState(setTimeout(() => {}, 0));
@@ -118,6 +122,10 @@ function App() {
                             setToggleTimer(
                                 setTimeout(() => {
                                     togglePopup(!showPopup);
+                                    setLoc(
+                                        window.location.href.split("#")[0] +
+                                            "-close"
+                                    );
                                 }, 200)
                             );
                         }
@@ -132,6 +140,7 @@ function App() {
                     negative
                     onClick={() => {
                         togglePopup(!showPopup);
+                        setLoc(window.location.href.split("#")[0] + "-close");
                     }}
                 />
             )}
