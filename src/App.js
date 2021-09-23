@@ -26,6 +26,9 @@ function App() {
 
     const [showPopup, togglePopup] = useState(false);
 
+    const [timer, setTimer] = useState(Date.now());
+    const [toggleTimer, setToggleTimer] = useState(setTimeout(() => {}, 0));
+
     const [logs, setLogs] = useState([]);
     const [showLogs, toggleLogs] = useState(false);
     const handleLogsButton = () => {
@@ -109,7 +112,16 @@ function App() {
                     className="ImagePopup"
                     ref={popup}
                     onClick={() => {
-                        togglePopup(!showPopup);
+                        if (Date.now() < timer + 200) {
+                            clearTimeout(toggleTimer);
+                        } else {
+                            setToggleTimer(
+                                setTimeout(() => {
+                                    togglePopup(!showPopup);
+                                }, 200)
+                            );
+                        }
+                        setTimer(Date.now());
                     }}
                 ></div>
             )}
